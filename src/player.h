@@ -1,11 +1,24 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 #include <SFML/Graphics.hpp>
+#include <iostream>
+using namespace std;
 using namespace sf;
 
+struct V {
+	int dx, dy;
+};
+
 class Player {
-private:
-	int x, y, w, h;
 public:
+	int x, y;
+	int money;
+	int HP, maxHP;
 	float speed;
+	int w, h;
+	V dir;
+	bool isAlive;
 
 	String file;
 	Image image;
@@ -21,19 +34,18 @@ public:
 		x = X; y = Y;
 		sprite.setPosition(X, Y);
 		sprite.setTextureRect(IntRect(0, 0, w, h));
-	}
-	
-	int getPlayerX() {
-		return x;
-	}
-	int getPlayerY() {
-		return y;
+		speed = 1;		//speed is default
+		money = 0;
+		HP = 100;
+		maxHP = 100;
+		isAlive = true;
 	}
 
-	void setPlayerX(int X) {
-		 x = X;
-	}
-	void setPlayerY(int Y) {
-		y = Y;
+	void update(float time) {
+		x += dir.dx;
+		y += dir.dy;
+		sprite.setPosition(x, y);
 	}
 };
+
+#endif

@@ -1,27 +1,31 @@
-//I suppose thate map is bigger than screen size
+//I suppose thate map is bigger than screen size and tile is twice bigger than player
+
+#ifndef VIEW_H
+#define VIEW_H
+
+#include "player.h"
+#include "defines.h"
 
 #include <SFML/Graphics.hpp>
-#include "map.h"
-
+#include <iostream>
+using namespace std;
 using namespace sf;
-
-#define screenWidth 800
-#define screenHeight 600
-#define HalfSprite 60
 
 View view;
 
-void getCoordinatesForView(int x, int y) { 
-	int cameraX = x;
-	int cameraY = y;
-	if (x < screenWidth / 2 - 2 * HalfSprite)
-		cameraX = screenWidth / 2 - 2 * HalfSprite;
-	if (y < screenHeight / 2 - 2 * HalfSprite)
-		cameraY = screenHeight / 2 - 2 * HalfSprite;
-	if (x > WIDTH_MAP * 64 - screenWidth / 2)
-		cameraX = WIDTH_MAP * 64 - screenWidth / 2;
-	if (y > HEIGHT_MAP * 64 - screenHeight / 2)
-		cameraY = HEIGHT_MAP * 64 - screenHeight / 2;
+void getCoordinatesForView(Player player) {
+	int x = player.x;
+	int y = player.y;
+	if (x < screenWidth / 2 - player.w)
+		x = screenWidth / 2 - player.w;
+	if (y < screenHeight / 2 - player.h)
+		y = screenHeight / 2 - player.h;
+	if (x > mapWidth * tileSize - screenWidth / 2 - player.w)
+		x = mapWidth * tileSize - screenWidth / 2 - player.w;
+	if (y > mapHeight * tileSize - screenHeight / 2 - player.h)
+		y = mapHeight * tileSize - screenHeight / 2 - player.h;
 
-	view.setCenter(cameraX + HalfSprite, cameraY + HalfSprite);
+	view.setCenter(x + player.w, y + player.h);
 }
+
+#endif
