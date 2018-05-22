@@ -11,15 +11,17 @@ using namespace sf;
 
 
 
-void subsidiary(Player& player, int pixel, float time, float currentFrame) {
-	switch (player.dir.dx * player.dir.dx + player.dir.dy * player.dir.dy) {
+void subsidiary(Player& player, int pixel, float time, float currentFrame) 
+{
+	switch ((int)(player.dir.dx * player.dir.dx + player.dir.dy * player.dir.dy)) 
+	{
 	case 1:
 		player.dir.dx = player.dir.dx * time * player.speed * strangeConst2;
 		player.dir.dy = player.dir.dy * time * player.speed * strangeConst2;
 		break;
 	case 2:
-		player.dir.dx = player.dir.dx * time * player.speed * strangeConst2 * divSqrt2;
-		player.dir.dy = player.dir.dy * time * player.speed * strangeConst2 * divSqrt2;
+		player.dir.dx = player.dir.dx * time * player.speed * strangeConst2 * (float)divSqrt2;
+		player.dir.dy = player.dir.dy * time * player.speed * strangeConst2 * (float)divSqrt2;
 		break;
 	}
 	currentFrame += strangeConst1 * time;
@@ -28,7 +30,10 @@ void subsidiary(Player& player, int pixel, float time, float currentFrame) {
 	//cout << "(" << player.getPlayerX() << " " << player.getPlayerY() << ")";
 };
 
-void moving(Player& player, float time) {
+void moving(Player& player, float time) 
+{
+	if (!player.isAlive)
+		return;
 	float currentFrame = 0;
 	player.dir.dx = 0, player.dir.dy = 0;
 
@@ -42,8 +47,10 @@ void moving(Player& player, float time) {
 		player.dir.dy += 1;
 
 
-	if (player.dir.dx == 1) {
-		switch (player.dir.dy) {
+	if (player.dir.dx == 1) 
+	{
+		switch ((int)player.dir.dy)
+		{
 		case 1:
 			subsidiary(player, spiderSize * 5, time, currentFrame); break;
 		case 0:
@@ -52,8 +59,10 @@ void moving(Player& player, float time) {
 			subsidiary(player, spiderSize * 6, time, currentFrame); break;
 		}
 	}
-	if (player.dir.dx == 0) {
-		switch (player.dir.dy) {
+	if (player.dir.dx == 0) 
+	{
+		switch ((int)player.dir.dy)
+		{
 		case 1:
 			subsidiary(player, 0, time, currentFrame); break;
 		case 0:  break;
@@ -61,8 +70,10 @@ void moving(Player& player, float time) {
 			subsidiary(player, spiderSize * 3, time, currentFrame); break;
 		}
 	}
-	if (player.dir.dx == -1) {
-		switch (player.dir.dy) {
+	if (player.dir.dx == -1) 
+	{
+		switch ((int)player.dir.dy)
+		{
 		case 1:
 			subsidiary(player, spiderSize * 4, time, currentFrame); break;
 		case 0:
