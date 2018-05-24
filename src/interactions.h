@@ -31,7 +31,7 @@ void spikes(Player& player, Map& map, char c, float gameTime)
 		}
 		if ((int)maxGameTimeSpikes % 1 == 0 && spikeDamage)
 		{
-			player.HP -= 1;
+			player.HP -= 4;
 			spikeDamage = false;
 		}
 	}

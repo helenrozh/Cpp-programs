@@ -42,13 +42,7 @@ public:
 			{
 				getline(mapFile, line);
 				tile[i] = line;
-				//cout << tile[i] << "\n";
 				i++;
-				/*for (int j = 0; j < width; j++)
-				{
-					cout << tile[i - 1][j];
-				}
-				cout << "\n";*/
 			}
 			mapFile.close();
 		}

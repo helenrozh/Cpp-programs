@@ -9,21 +9,29 @@
 #include "moving.h"
 #include "replay.h"
 #include "printinfo.h"
+#include "weapon.h"
+#include "enemy.h"
+#include "mana.h"
+
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <list> 
 #include <sstream>
 #include <string>
 
 using namespace sf;
 using namespace std;
 
+float maxGameTimeEnemy = 0;
+bool isEnemy = true;
+
 int main()
 {
 	RenderWindow window(VideoMode(screenWidth, screenHeight), "helenrozh", Style::Default);
 	view.reset(FloatRect(0, 0, screenWidth, screenHeight));
 
-	Player spider("spider", 200, 200, spiderSize, spiderSize, 100);
+	Player spider("spider", 500, 500, spiderSize, spiderSize, 100, 100);
 
 	Font font;
 	Text infoText("", font, 32);
@@ -32,7 +40,7 @@ int main()
 	infoText.setStyle(Text::Bold);
 
 	Map map;
-	map.readMap(1);
+	map.readMap(2);
 
 	Texture mapTexture;
 	Sprite mapSprite;
@@ -54,13 +62,25 @@ int main()
 	healthIndicatorTexture.loadFromFile("src\\recources\\images\\health.png");
 	healthIndicatorSprite.setTexture(healthIndicatorTexture);
 
+	Texture manaIndicatorTexture;
+	Sprite manaIndicatorSprite;
+	manaIndicatorTexture.loadFromFile("src\\recources\\images\\mana.png");
+	manaIndicatorSprite.setTexture(manaIndicatorTexture);
+
 	Clock clock;
 	Clock gameTimeClock;
 	float gameTime = 0;
 	float time = 0;
 
+	list<Weapon*>  weapons;
+	list<Enemy*>  enemies;
+
+	//enemies.push_back(new Enemy("bee", 1000, 1000, 64, 64, 100));
+
 	while (window.isOpen())
 	{
+		list<Enemy*>::iterator it = enemies.begin();
+
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -81,11 +101,50 @@ int main()
 		{
 			gameTime = gameTimeClock.getElapsedTime().asSeconds();
 
+			//cout << RAND_MAX << " "; 32767
+			if (gameTime - maxGameTimeEnemy > 8)
+			{
+				isEnemy = true;
+				maxGameTimeEnemy = gameTime;
+			}
+			//cout << isShooting << "\n";
+			if (isEnemy)
+			{
+				isEnemy = false;
+				enemies.push_back(new Enemy("bee", rand() % (map.width * tileSize), rand() % (map.height * tileSize), 64, 64, 100));
+			}
+
 			moving(spider, time);
-			printInfoIfAlive(spider, window, moneyIndicatorSprite, healthIndicatorSprite, infoText);
+			//manaUsage(spider, gameTimeClock, window);
+
+
+			list<Enemy*>::iterator listEnd = enemies.end();
+			for (it = enemies.begin(); it != listEnd;)
+			{
+				if ((*it)->HP > 0)
+				{
+					(*it)->shooting(spider, window, time, gameTime);
+					interactionWithWeapon(weapons, *it, window, time);
+					(*it)->update(time, spider, window, enemies, it);
+					it++;
+				}
+				else
+				{
+					delete(*it);
+					it = enemies.erase(it);
+					//listEnd = enemies.end();
+				}
+
+			}
+
+			printInfoIfAlive(spider, window, moneyIndicatorSprite, healthIndicatorSprite, manaIndicatorSprite, infoText);
+			smallHealthBar(spider, window);
+			smallManaBar(spider, window);
 			interactionWithMap(spider, map, gameTime);
 			spider.update(gameTime);
 			getCoordinatesForView(spider, map);
+			shootingPlayer(spider, window, weapons, time, gameTime);
+
 		}
 		else
 		{
@@ -93,7 +152,25 @@ int main()
 
 			if (Keyboard::isKeyPressed(Keyboard::Space))
 			{
-				replay(spider, map, 1);
+				gameTimeClock.restart();
+				gameTime = 0;
+
+				list<Enemy*>::iterator listEnd = enemies.end();
+				for (it = enemies.begin(); it != listEnd; it++)
+				{
+					(*it)->isEnemyShooting = true;
+					(*it)->maxGameTimeEnemyWeapon = 0;
+				}
+				maxGameTimeWeapon = 0;
+				isShooting = true;
+				spider.manaRestoring = true;
+				spider.maxGameTimeHealth = 0;
+				spider.maxGameTimeMana = 0;
+				spider.healthRestoring = true;
+				maxGameTimeSpikes = 0;
+				spikeDamage = true;
+
+				replay(spider, map, 2);
 			}
 		}
 	}

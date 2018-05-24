@@ -13,8 +13,8 @@ void replay(Player& player, Map& map, int mapNum)
 {
 	player.isAlive = true;
 	player.HP = player.maxHP;
-	player.x = 200;
-	player.y = 200;
+	player.x = 500;
+	player.y = 500;
 	player.money = 0;
 	player.sprite.setTextureRect(IntRect(0, 0, spiderSize, spiderSize));
 

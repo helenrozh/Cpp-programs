@@ -8,29 +8,25 @@
 using namespace std;
 using namespace sf;
 
-int maxGameTimeRestoring = 0;
-bool healthRestoring = true;
-
 struct V
 {
 	float dx, dy;
 };
 
-class Entity
+class Matter
 {
 public:
 	int x, y;
 	int w, h;
-	int HP, maxHP;
 	float speed;
 	V dir;
-	bool isAlive, isMove, isRestore;
+	bool isMove;
 
 	String name;
 	Texture texture;
 	Sprite sprite;
 
-	Entity(String F, int X, int Y, int W, int H, int MaxHP)
+	Matter(String F, int X, int Y, int W, int H)
 	{
 		name = F;
 		w = W; h = H;
@@ -39,8 +35,19 @@ public:
 		x = X; y = Y;
 		sprite.setPosition((float)X, (float)Y);
 		sprite.setTextureRect(IntRect(0, 0, w, h));
+	}
+};
+
+class Entity : public Matter
+{
+public:
+	int HP, maxHP;
+	bool isAlive, isMove, isRestore;
+
+	Entity(String F, int X, int Y, int W, int H, int MaxHP) : Matter(F, X, Y, W, H)
+	{
 		maxHP = MaxHP;
-		HP = maxHP;
+		HP = MaxHP;
 		isAlive = true;
 	}
 };
@@ -50,9 +57,22 @@ class Player : public Entity
 public:
 	int money;
 	float speed;
+	int MP, maxMP;
+	int maxGameTimeHealth;
+	int maxGameTimeMana;
+	bool healthRestoring;
+	bool manaRestoring;
+	float dex;  //dexterity
 
-	Player(String F, int X, int Y, int W, int H, int MaxHP) : Entity(F, X, Y, W, H, MaxHP)
+	Player(String F, int X, int Y, int W, int H, int MaxHP, int MaxMP) : Entity(F, X, Y, W, H, MaxHP)
 	{
+		dex = 1;			//dexterity is default
+		maxGameTimeHealth = 0;
+		maxGameTimeMana = 0;
+		healthRestoring = true;
+		manaRestoring = true;
+		maxMP = MaxMP;
+		MP = MaxMP;
 		speed = 1;		//speed is default
 		money = 0;
 
@@ -72,23 +92,35 @@ public:
 		}
 		else
 		{
+			gameTime *= 2;
 			if (HP < maxHP)
 			{
-				gameTime *= 2;
 				
-					if ((int)(gameTime) != maxGameTimeRestoring)
+					if ((int)gameTime > maxGameTimeHealth)
 					{
 						healthRestoring = true;
+						maxGameTimeHealth = (int)gameTime;
 					}
-					if ((int)gameTime > maxGameTimeRestoring)
-					{
-						maxGameTimeRestoring = (int)gameTime;
-					}
-					if ((int)maxGameTimeRestoring % 1 == 0 && healthRestoring)
+					if ((int)maxGameTimeHealth % 1 == 0 && healthRestoring)
 					{
 						HP += 1;
 						healthRestoring = false;
 					}
+
+			}
+			if (MP < maxMP)
+			{
+
+				if (abs ((int)gameTime - maxGameTimeMana) > 3)
+				{
+					manaRestoring = true;
+					maxGameTimeMana = (int)gameTime;
+				}
+				if (manaRestoring)
+				{
+					MP += 1;
+					manaRestoring = false;
+				}
 
 			}
 		}

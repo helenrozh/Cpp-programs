@@ -12,5 +12,7 @@
 #define tileSize 128
 #define spiderSize 64
 #define smallNum 5
+#define weaponSpeed 2
+#define hit 19
 
 #endif

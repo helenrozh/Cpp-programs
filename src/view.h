@@ -28,7 +28,8 @@ void getCoordinatesForView(Player player, Map& map)
 	}
 	if (x > map.width * tileSize - screenWidth / 2 - player.w)
 	{
-		x = map.width * tileSize - screenWidth / 2 - player.w;
+		cout << x << " " << y << "\n";
+ 		x = map.width * tileSize - screenWidth / 2 - player.w;
 	}
 	if (y > map.height * tileSize - screenHeight / 2 - player.h)
 	{
