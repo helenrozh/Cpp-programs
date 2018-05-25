@@ -87,7 +87,7 @@ void printInfoIfAlive(Player& player, RenderWindow& window, Sprite moneyIndicato
 	window.draw(infoText);
 }
 
-void printInfoIfDead(RenderWindow& window, float gameTime, Text infoText, Sprite youDiedSprite)
+void printInfoIfDead(RenderWindow& window, float gameTime, Text infoText, Sprite youDiedSprite, Player player)
 {
 	int x0 = (int)view.getCenter().x - screenWidth / 2;
 	int y0 = (int)view.getCenter().y - screenHeight / 2;
@@ -126,6 +126,14 @@ void printInfoIfDead(RenderWindow& window, float gameTime, Text infoText, Sprite
 	}
 	infoText.setString(timeStr);
 	infoText.setPosition((float)x0 + (screenHeight - timeStr.length()) / 2, (float)y0 + screenHeight / 2 + 100);
+	window.draw(infoText);
+
+	string moneyStr = "You earned ";
+	ostringstream info;
+	info << player.money;
+	moneyStr += info.str() + " coins";
+	infoText.setString(moneyStr);
+	infoText.setPosition((float)x0 + (screenHeight - moneyStr.length()) / 2, (float)y0 + screenHeight / 2 + 130);
 	window.draw(infoText);
 
 	infoText.setCharacterSize(40);

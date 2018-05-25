@@ -98,8 +98,8 @@ void interactionWithWeapon(list<Weapon*>& weapons, Enemy* enemy, RenderWindow& w
 	list<Weapon*>::iterator listEnd = weapons.end();
 	for (list<Weapon*>::iterator it = weapons.begin(); it != listEnd;)
 	{
-		int wX = (*it)->x + (*it)->w;
-		int wY = (*it)->y + (*it)->h;
+		int wX = (*it)->x + (*it)->w / 2;
+		int wY = (*it)->y + (*it)->h / 2;
 		if ((wX > enemy->x) && (wX < enemy->x + enemy->w) && (wY > enemy->y) && (wY < enemy->y + enemy->h) )
 		{
 			enemy->HP -= (*it)->damage;
