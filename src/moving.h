@@ -3,7 +3,7 @@
 
 #include "player.h"
 #include "defines.h"
-
+#include <math.h>
 #include <SFML/Graphics.hpp>
 #include <iostream>
 using namespace std;
